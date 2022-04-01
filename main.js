@@ -143,7 +143,6 @@ class Scheduler{
 		if(this.readyQueue.length  != 0 || this.ioQueue.length != 0)
 			{return true;}
 		return false;
-
 	}
 
 	checkForQ1(){
@@ -275,7 +274,7 @@ class Scheduler{
 			console.log("\t\tChecking for Q2 processes in the readyQueue:", this.readyQueue);
 			console.log("Current Running Process:", this.readyQueue[0])
 			console.log("------------------------------------------------------------------------------------------------------------------------------");
-			if(this.readyQueue[0].priority === 1) {
+			if(this.readyQueue[0].priority === 2) {
 				console.log("\t\t\t\t\t\t", this.readyQueue[0].pid, "Is a Q1 Process")
 				console.log("\t\t\t\t Checking if:", this.readyQueue[0].timings[0], "is less then or equal to:", this.readyQueue[0].timeQuantum, ":", parseInt(this.readyQueue[0].timings[0], 10) <= this.readyQueue[0].timeQuantum)
 				console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
