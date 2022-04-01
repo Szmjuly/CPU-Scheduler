@@ -69,28 +69,27 @@ class Scheduler{
 	}
 
 	start(){
-		// while(this.isRunning() === true)
+		while(this.isRunning() === true)
 		{
 			// Time is 0 and the scheduler just began, as each process arrived at time 0, we only have to worry about pos 0 in the array
 			console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-			console.log("Checking if (Current Time):", this.currentTime, "is 0")
+			console.log("\t\t\t\t\tChecking if (Current Time):", this.currentTime, "is 0")
 			if(this.currentTime === this.startTime) {
-				console.log("The currentTime is 0");
-				console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-
+				console.log("\t\t\t\t\t\tThe currentTime is 0");
+		
 				// Checking to see if the first burstTime is less then or equal to Queue1 time quantum
-				console.log("Checking to see if the burstTime:", parseInt(this.readyQueue[0].timings[0], 10), "for:", this.readyQueue[0].pid, "is less then the timeQuantum:", this.timeQuantum1);
+				console.log("\t\t\tChecking to see if the burstTime:", parseInt(this.readyQueue[0].timings[0], 10), "for:", this.readyQueue[0].pid, "is less then the timeQuantum:", this.readyQueue[0].timeQuantum);
 				console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 				if(parseInt(this.readyQueue[0].timings[0], 10) <= timeQuantum1) {	// Dont have to check the priority as each process starts off in queue 1 and gets preempted					
-					console.log("The timeQuantum is greater then the burstTime");
-					console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-					console.log(this.readyQueue[0].pid, "finishes its burstTime of:", this.readyQueue[0].timings[0]);
+					console.log("\t\t\t\tThe timeQuantum is greater then the burstTime so therefore:");
+					console.log("\t\t\t\t\t" + this.readyQueue[0].pid, "finishes its burstTime of:", this.readyQueue[0].timings[0]);
 					this.currentTime = parseInt(this.readyQueue[0].timings[0], 10);	// Setting the current run time to the process burst time
 					this.readyQueue[0].endTime = this.currentTime;	// Setting the process end time to the current time (set earlier to the burst time)	
-					console.log("The currentTime is now:", this.currentTime + ",", "The process has completed at:", this.readyQueue[0].endTime);
-					console.log("The process completed it burst and now the timing is removed from the array", this.readyQueue[0].timings)
+					console.log("\t\t   The process completed it burst and now the timing is removed from the array")
+					console.log("\t\t\t  " + this.readyQueue[0].pid + "'s Timing Array:",this.readyQueue[0].timings);
 					this.readyQueue[0].timings.shift(); // Removing the completed burst time
-					console.log("\t\t\t\t\t\t\t\t\t   ",this.readyQueue[0].timings)
+					console.log("\t\t   " + this.readyQueue[0].pid + "'s Timing Array Updated:",this.readyQueue[0].timings);
+					console.log("\t\t\t  The currentTime is now:", this.currentTime + ",", "The process has completed at:", this.readyQueue[0].endTime);
 					console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
 					console.log("\t\t\t  " + this.readyQueue[0].pid, "goes to I/O for:", this.readyQueue[0].timings[0], "time units and gets removed from the readyQueue");
@@ -99,9 +98,9 @@ class Scheduler{
 					this.readyQueue[0].timings.shift();
 
 					this.ioQueue.push(this.readyQueue[0]);	// Since the process has completed its first burst it gets sent to I/O
-					console.log("\t\t\t\t\t\t  ", ":The I/O Queue:  ",this.ioQueue);
+					console.log("\t\t\t\t\t  ", "The I/O Queue:  ",this.ioQueue);
 					this.readyQueue.shift();	// Once the process has been sent to I/O the readyQueue gets shifted to the right removing the process from the array
-					console.log("\t\t\t\t\t\t  ", ":The Ready Queue:",this.readyQueue);
+					console.log("\t\t\t  ", "The Ready Queue:",this.readyQueue);
 					console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 				}
 				else {	// If the first burst time is not less then the timeQuantum1 (Queue1): basically greater then the time quantum
@@ -126,7 +125,7 @@ class Scheduler{
 			// If the current time does not = 0
 				
 			// Checking I/O Queue if any processes finished, if so, send them back to the readyQueue, and update their arrivalTime
-			
+			this.checkIOQueue();
 				
 			// Checking the readyQueue for priority 1 processes
 			this.checkForQ1();
@@ -140,7 +139,7 @@ class Scheduler{
 	}
 
 	isRunning(){
-		if(this.readyQueue.length  != 0 || this.ioQueue.length != 0)
+		if(this.readyQueue.length  === 0 || this.ioQueue.length === 0)
 			{return true;}
 		return false;
 	}
@@ -148,7 +147,11 @@ class Scheduler{
 	checkForQ1(){
 		// For the length of the ready Queue
 		for(let i = this.readyQueue.length; i >= 0; i--) {
-			this.checkIOQueue();
+
+			if(i != this.readyQueue.length){
+				this.checkIOQueue();
+			}
+
 			console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 			console.log("\t\t\t\t\t       The current time is:", this.currentTime);
 			console.log("\t\tChecking for Q1 processes in the readyQueue:", this.readyQueue);
@@ -161,7 +164,7 @@ class Scheduler{
 
 				if(parseInt(this.readyQueue[0].timings[0], 10) <= this.readyQueue[0].timeQuantum) {
 					console.log("\t\t\t Process:", this.readyQueue[0].pid + "'s", "burstTime:", this.readyQueue[0].timings[0], "is less then or Equal to the Q1 timeQuantum", this.readyQueue[0].timeQuantum);
-					console.log("\t\t\t\tProcess is running for the length of the timeQuantum:", this.readyQueue[0].timeQuantum)
+					console.log("\t\t\t\tProcess is running for the length of its burstTime:", this.readyQueue[0].timings[0])
 					console.log("\t\t\t\t\t\tProcess is running...")
 					
 					console.log("\t\t\t\t     Updating the currentTime from:", this.currentTime, "to:", this.currentTime + this.readyQueue[0].timings[0]);
@@ -179,6 +182,7 @@ class Scheduler{
 					console.log("\t\t\t\t\t Updating:", this.readyQueue[0].pid + "'s arrivalTime from:", this.readyQueue[0].arrivalTime, "to:", parseInt(this.readyQueue[0].endTime, 10) + parseInt(this.readyQueue[0].timings[0], 10))
 					this.readyQueue[0].arrivalTime = this.readyQueue[0].endTime + this.readyQueue[0].timings[0];
 					this.readyQueue[0].timings.shift();
+					console.log("\t\t    " + this.readyQueue[0].pid + "'s timing array updated:",this.readyQueue[0].timings);
 
 					console.log("\t\t\t\t\t   I/O Queue:", this.ioQueue);
 					this.ioQueue.push(this.readyQueue[0]);
@@ -190,7 +194,6 @@ class Scheduler{
 					continue;
 				}
 
-				console.log(this.readyQueue[0])
 				console.log("\t\t\t\t    Checking if:", this.readyQueue[0].timings[0], "is greater then:", this.readyQueue[0].timeQuantum, ":", parseInt(this.readyQueue[0].timings[0], 10) > this.readyQueue[0].timeQuantum);
 				console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 				if (parseInt(this.readyQueue[0].timings[0], 10) > this.readyQueue[0].timeQuantum)
@@ -238,44 +241,34 @@ class Scheduler{
 					console.log("\t\t\t\t           Process has finished running...");
 					console.log("\t\t\t\t\t       The current time is:", this.currentTime)
 					console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-
-
-
-
-
-
-
-
 				}
 			}
-			
-			if(this.readyQueue[0].priority === 2)
+
+			if(this.readyQueue[0].priority === 2 || this.readyQueue[0].priority === 3)
 			{
-				for(let i = 0; i <= this.readyQueue.length; i++) {
-					if(this.readyQueue[0].priority === 2 || this.readyQueue[0].priority === 3){
-						this.readyQueue.push(this.readyQueue[0]);
-						this.readyQueue.shift();
-					}
-					else {
-						break;
-					}
-				}
+				console.log("\t\t\t\t   ",this.readyQueue[0].pid, "Is either a Q2 or a Q3 process")
+				console.log("\t\t\t\t      Process moves to the back of the array")
+				this.readyQueue.push(this.readyQueue[0]);
+				console.log("\t\t\t  Ready Queue:", this.readyQueue);
+				this.readyQueue.shift();
+				console.log("\t\t\tReady Queue Updated:", this.readyQueue)
 			}
 		}
 	}
 
 	checkForQ2(){
-		this.checkForQ1();
 		// For the length of the ready Queue
 		for(let i = this.readyQueue.length; i >= 0; i--) {
 			this.checkIOQueue();
+
 			console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 			console.log("\t\t\t\t\t       The current time is:", this.currentTime);
 			console.log("\t\tChecking for Q2 processes in the readyQueue:", this.readyQueue);
 			console.log("Current Running Process:", this.readyQueue[0])
 			console.log("------------------------------------------------------------------------------------------------------------------------------");
+			
 			if(this.readyQueue[0].priority === 2) {
-				console.log("\t\t\t\t\t\t", this.readyQueue[0].pid, "Is a Q1 Process")
+				console.log("\t\t\t\t\t\t", this.readyQueue[0].pid, "Is a Q2 Process")
 				console.log("\t\t\t\t Checking if:", this.readyQueue[0].timings[0], "is less then or equal to:", this.readyQueue[0].timeQuantum, ":", parseInt(this.readyQueue[0].timings[0], 10) <= this.readyQueue[0].timeQuantum)
 				console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 
@@ -361,17 +354,11 @@ class Scheduler{
 				}
 			}
 			
-			if(this.readyQueue[0].priority === 3)
+			console.log("\t\t\tChecking to see if a priority 1 was found:", this.readyQueue[0].priority === 1)
+			if(this.readyQueue[0].priority === 1)
 			{
-				for(let i = 0; i <= this.readyQueue.length; i++) {
-					if(this.readyQueue[0].priority === 3){
-						this.readyQueue.push(this.readyQueue[0]);
-						this.readyQueue.shift();
-					}
-					else {
-						break;
-					}
-				}
+				console.log("\t\t\t\t" + this.readyQueue[0].pid, "is a Q1 process")
+				this.checkForQ1();
 			}
 		}
 	}
@@ -388,21 +375,28 @@ class Scheduler{
 
 	checkIOQueue(){
 		// For the length of the I/O Queue
-		for(let i = this.ioQueue.length - 1; i >= 0; i--) {
+		console.log("*****************************************************************************************************************************");
+		console.log("\t\t\t\t\tAmount of Processes out in I/O:", this.ioQueue.length)
+		for(let i in this.ioQueue) {
             console.log("\t\t\t\t\t Checking if:", this.ioQueue[0].pid, "Has finished in IO");
 			console.log("\t\t\t\t\t      The current time is:", this.currentTime)
 			console.log("\t\t\t\t\t   Process: ", this.ioQueue[0].pid + "'s arrivalTime:", this.ioQueue[0].arrivalTime);
 
 			// If the processes burst plus its endTime (arrivalTime) equals the current time
 			if(this.currentTime >= parseInt(this.ioQueue[0].arrivalTime, 10)) {
-				console.log("\t\t\t\t\t" + this.ioQueue[0].pid, "Has finished in IO")
+				console.log("*****************************************************************************************************************************");
+				console.log("\t\t\t\t\t     " + this.ioQueue[0].pid, "Has finished in IO");
+				console.log("*****************************************************************************************************************************");
 				console.log("\t\t\t\t  Ready Queue:", this.readyQueue)
 				this.readyQueue.push(this.ioQueue[0]);	// Push the process back to the readyQueue
 				this.ioQueue.shift();
-				console.log("\t\t\t\t  Ready Queue Updated:",this.readyQueue)
+				console.log("\t\t\t\t  Ready Queue Updated:",this.readyQueue);
+
 			}
-			else if(this.ioQueue[0].arrivalTime > this.currentTime)
+
+			if(this.ioQueue[0].arrivalTime > this.currentTime)
 			{
+				console.log("*****************************************************************************************************************************");
 				console.log("\t\t\t\t\t  " + this.ioQueue[0].pid, "Has not finished in IO yet")
 				this.ioQueue.push(this.ioQueue[0]);
 				this.ioQueue.shift();
