@@ -69,8 +69,8 @@ class Scheduler{
 	}
 
 	start(){
-		while(this.isRunning() === true)
-		{
+		// while(this.isRunning() === true)
+		// {
 			// Time is 0 and the scheduler just began, as each process arrived at time 0, we only have to worry about pos 0 in the array
 			console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 			console.log("\t\t\t\t\tChecking if (Current Time):", this.currentTime, "is 0")
@@ -134,9 +134,9 @@ class Scheduler{
 			this.checkForQ2();
 
 			// Checking the readyQueue for priority 2 processes
-			// this.checkForQ3();			
+			this.checkForQ3();			
 		}
-	}
+	// }
 
 	isRunning(){
 		if(this.readyQueue.length  != 0 || this.ioQueue.length != 0)
@@ -365,12 +365,18 @@ class Scheduler{
 
 	checkForQ3(){
 		// For the length of the ready Queue
-		this.readyQueue.forEach((process) => {
-			if(process.priority === 3) {
-				this.completed.push(process);
-				this.readyQueue.shift();
+		for(let i = this.readyQueue.length; i >= 0; i--) {
+			console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+			console.log("\t\t\t\t\t       The current time is:", this.currentTime);
+			console.log("\t\tChecking for Q3 processes in the readyQueue:", this.readyQueue);
+			console.log("Current Running Process:", this.readyQueue[0])
+			console.log("------------------------------------------------------------------------------------------------------------------------------");
+
+			this.checkIOQueue();
+			if(this.readyQueue[0].priority === 3) {
+				console.log("Found a Q3 Process:", this.readyQueue[0].pid);
 			}
-		});
+		}
 	}
 
 	checkIOQueue(){
@@ -397,21 +403,18 @@ class Scheduler{
 			if(this.ioQueue[0].arrivalTime > this.currentTime)
 			{
 				console.log("*****************************************************************************************************************************");
-				console.log("\t\t\t\t\t  " + this.ioQueue[0].pid, "Has not finished in IO yet")
+				console.log("\t\t\t\t\t  " + this.ioQueue[0].pid, "has not finished in I/O yet");
 				this.ioQueue.push(this.ioQueue[0]);
 				this.ioQueue.shift();
 			}
-			console.log("*****************************************************************************************************************************");
 		}
 	}
 }
-
-// Main
-const MLFQ = new Scheduler();
-
-document.querySelector('#app').innerHTML = 
-`
-  <header><h1>CPU Scheduling Algorithms</h1></header>
-  <hr  />
   
-`
+  const MLFQ = new Scheduler();
+
+  document.querySelector('#app').innerHTML = 
+  `
+	<header><h1>MLFQ Algorithm</h1></header>
+	<hr />
+  `
