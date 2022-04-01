@@ -139,7 +139,7 @@ class Scheduler{
 	}
 
 	isRunning(){
-		if(this.readyQueue.length  === 0 || this.ioQueue.length === 0)
+		if(this.readyQueue.length  != 0 || this.ioQueue.length != 0)
 			{return true;}
 		return false;
 	}
